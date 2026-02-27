@@ -20,7 +20,7 @@ class get_key:
             if PROD:
                 # self._["key"] = os.getenv("UPLINK_KEY_CLIENT")
                 # self._["key"] = os.environ.get("UPLINK_KEY_CLIENT")
-                ...
+                self._["key"] = None  ##
             else:
                 from pathlib import Path
 

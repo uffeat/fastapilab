@@ -1,6 +1,7 @@
 import json
 import os
 from fastapi import FastAPI, Request, Response
+from anvil.server import call, connect
 
 app = FastAPI()
 PROD = os.getenv("RENDER") == "true"
@@ -19,8 +20,6 @@ class get_key:
         if not self._.get("key"):
             if PROD:
                 self._["key"] = os.getenv("UPLINK_KEY_CLIENT")
-                # self._["key"] = os.environ.get("UPLINK_KEY_CLIENT")
-                ##self._["key"] = None  ##
             else:
                 from pathlib import Path
 
@@ -98,6 +97,11 @@ class echo(Api):
         print("args:", args)  ##
         print("kwargs:", kwargs)  ##
 
+        connect(get_key())
+        response = call('main', 'echo', request=dict(args=args, kwargs=kwargs))
+        print("response:", response)  ##
+        return response.get('result')
+
         return dict(args=args, kwargs=kwargs)
 
 
@@ -121,14 +125,13 @@ async def main(
     target = registered["target"]
     options = registered["options"]
     # Create meta
-    # TODO Remove key from meta, once stuff works
-    meta = dict(name=name, submission=submission, key=get_key())
+    meta = dict(name=name, submission=submission)
     # Extract args and kwargs from request body
     data = await request.json()
     args = data.get("args", tuple())
     kwargs = data.get("kwargs", dict())
     # Get target result
-    # NOTE To guard against mutation copies of meta and options could be passed
+    # NOTE To guard against mutation, copies of meta and options could be passed
     # into the target constructor. However, not doing so enables powerful patterns,
     # but do handle with care!
     result = target(meta=meta, options=options)(*args, **kwargs)

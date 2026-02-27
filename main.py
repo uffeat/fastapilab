@@ -5,7 +5,9 @@ from fastapi import FastAPI, Request, Response
 app = FastAPI()
 PROD = os.getenv("RENDER") == "true"
 # TODO Remove  localhost from allowed_origins, once stuff works.
-allowed_origins = set(["https://rolloh.vercel.app", "http://localhost"]) if PROD else set()
+allowed_origins = (
+    set(["https://rolloh.vercel.app", "http://localhost:5500"]) if PROD else set()
+)
 
 
 class get_key:
@@ -16,7 +18,9 @@ class get_key:
         """Returns uplink key."""
         if not self._.get("key"):
             if PROD:
-                self._["key"] = os.getenv("UPLINK_KEY_CLIENT")
+                # self._["key"] = os.getenv("UPLINK_KEY_CLIENT")
+                # self._["key"] = os.environ.get("UPLINK_KEY_CLIENT")
+                ...
             else:
                 from pathlib import Path
 
@@ -36,6 +40,7 @@ get_key = get_key()
 def set_access(request: Request, response: Response) -> None:
     """Sets response header to control access."""
     origin = request.headers.get("origin")
+    print("origin:", origin)  ##
     if not origin:
         return
     if PROD:

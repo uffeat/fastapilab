@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request, Response
 app = FastAPI()
 PROD = os.getenv("RENDER") == "true"
 # TODO Remove  localhost from allowed_origins, once stuff works.
-allowed_origins = set(["https://rolloh.vercel.app", "http://localhost:3869"]) if PROD else set()
+allowed_origins = set(["https://rolloh.vercel.app", "http://localhost"]) if PROD else set()
 
 
 class get_key:

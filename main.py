@@ -18,9 +18,9 @@ class get_key:
         """Returns uplink key."""
         if not self._.get("key"):
             if PROD:
-                # self._["key"] = os.getenv("UPLINK_KEY_CLIENT")
+                self._["key"] = os.getenv("UPLINK_KEY_CLIENT")
                 # self._["key"] = os.environ.get("UPLINK_KEY_CLIENT")
-                self._["key"] = None  ##
+                ##self._["key"] = None  ##
             else:
                 from pathlib import Path
 
@@ -33,7 +33,7 @@ class get_key:
 
 
 get_key = get_key()
-##print("key:", get_key())  ##
+print("Uplink key:", get_key())  ##
 
 
 def set_access(request: Request, response: Response) -> None:
